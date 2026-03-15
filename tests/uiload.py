@@ -5,7 +5,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi("../ui/free.ui", self)
+        uic.loadUi(".../ui/free.ui", self)
 
         self.pushButton.clicked.connect(self.button_clicked)
     
