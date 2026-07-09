@@ -5,9 +5,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi(".../ui/free.ui", self)
+        uic.loadUi("./ui/main.ui", self)
 
-        self.pushButton.clicked.connect(self.button_clicked)
+        # self.pushButton.clicked.connect(self.button_clicked)
     
     def button_clicked(self):
         print("FREE SHIT CUMMING!!!")

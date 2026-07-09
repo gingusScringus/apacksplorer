@@ -2,7 +2,7 @@ import subprocess
 import pprint
 
 result = subprocess.run(
-    ["../tools/linux/aapt2", "d", "badging", "./app-debug.apk"],
+    ["../tools/macos/aapt2", "d", "badging", "./app-debug.apk"],
     capture_output=True,
     text=True,
     check=True
