@@ -1,3 +1,7 @@
 .vscode/
 .venv/
 .DS_Store
+dist/
+build/
+*.spec
+__pycache__
