@@ -4,9 +4,16 @@ import subprocess
 import pprint
 import re
 import zipfile
+import sys
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DROID_TOOLS = os.path.join(SCRIPT_DIR, "..", "tools")
+if getattr(sys, 'frozen', False):
+    # running as a PyInstaller bundle
+    # sys._MEIPASS points at the bundle's extracted resource root
+    DROID_TOOLS = os.path.join(sys._MEIPASS, "tools")
+else:
+    # running from source
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    DROID_TOOLS = os.path.join(SCRIPT_DIR, "..", "tools")
 
 system = platform.system()
 
