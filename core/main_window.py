@@ -38,7 +38,7 @@ class MainWindow(QtWidgets.QMainWindow):
             None, 
             "Select a File", 
             "", 
-            "Android Package (*.apk);;All Files (*)"
+            "Android Packages (*.apk, *.xapk, *.apkm, *.apks);;All Files (*)"
         )
         if not file_path:
             return
