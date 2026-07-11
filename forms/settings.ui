@@ -29,8 +29,13 @@
     <bool>false</bool>
    </property>
    <property name="placeholderText">
-    <string>lang</string>
+    <string/>
    </property>
+   <item>
+    <property name="text">
+     <string>English</string>
+    </property>
+   </item>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -154,6 +159,29 @@
    </property>
    <property name="text">
     <string>CheckBox</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>60</y>
+     <width>58</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Theme</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_2">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>60</y>
+     <width>261</width>
+     <height>32</height>
+    </rect>
    </property>
   </widget>
  </widget>

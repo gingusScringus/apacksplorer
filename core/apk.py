@@ -5,6 +5,8 @@ import pprint
 import re
 import zipfile
 import sys
+import yaml
+import hashlib
 
 if getattr(sys, 'frozen', False):
     # running as a PyInstaller bundle
@@ -26,6 +28,12 @@ elif system == "Linux":
 else:
     raise RuntimeError(f"unsupported platform: {system}")
 
+_VERSIONS_PATH = os.path.join(os.path.dirname(__file__), 'android_versions.yaml')
+INVALID_FILENAME_CHARS = '\\/:*?"<>|'
+
+with open(_VERSIONS_PATH, 'r', encoding='utf-8') as f:
+    ANDROID_VERSIONS = yaml.safe_load(f)
+
 class APK:
     def __init__(self, path):
         self.path = path
@@ -38,8 +46,11 @@ class APK:
         self.versionCode = None
         self.versionName = None
         self.minSdkVersion = None
+        self.maxSdkVersion = None
         self.targetSdkVersion = None
+        self.compileSdkVersion = None
         self.supports_any_density = None
+        self.opengl_es_version = None
 
         # lists
         self.uses_permissions = []
@@ -51,14 +62,34 @@ class APK:
         # dictionaries
         self.application_labels = {}
         self.uses_features = {
-            "used": [],
+            "uses": [],
             "not_required": [],
             "implied": []
         }
 
+        # bools
+        self.supports_android = True # practically useless but whatever
+        self.supports_android_tv = False
+        self.supports_wear_os = False
+        self.supports_android_auto = False
+        self.uses_opengles = False
+        self.uses_vulkan = False
+
     def _parse_quoted_list(self, line):
         values = line.split(":", 1)[1]
         return values.replace("'", "").split()
+    
+    def _parse_quoted_string(self, line):
+        value = line.split(":", 1)[1]
+        return value.strip("'")
+    
+    def _parse_between(self, text, start, end):
+        """extract substring between two markers, or '' if not found"""
+        try:
+            after_start = text.split(start, 1)[1]
+            return after_start.split(end, 1)[0]
+        except IndexError:
+            return ''
     
     def _extract_icon_bytes(self, icon_internal_path):
         if not icon_internal_path:
@@ -70,23 +101,53 @@ class APK:
         except KeyError:
             # path existed in badging output but not actually in the zip, can happen
             return None
+            
+    def _gles_version_decode(self, raw):
+        """
+        aapt2 reports gl-es version as a packed hex value, e.g. '0x30001'
+        high bits = major version, low 16 bits = minor version.
+        '0x30001' -> major=3, minor=1 -> "3.1"
+        """
+        if not raw:
+            return ''
+
+        if raw.lower().startswith('0x'):
+            value = int(raw, 16)
+            major = value >> 16
+            minor = value & 0xFFFF
+            return f"{major}.{minor}"
+
+        # not hex, just return as-is (some old/weird apks might not use the packed format)
+        return raw
+
+    def _compute_sha256(self):
+        sha256 = hashlib.sha256()
+        with open(self.path, 'rb') as f:
+            for chunk in iter(lambda: f.read(8192), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
 
     def parse(self):
         print(f"{__file__}: parsing {self.path} with AAPT2 on {system}")
-
-        result = subprocess.run(
-            [AAPT2, "d", "badging", self.path],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-
+        try:
+            result = subprocess.run(
+                [AAPT2, "d", "badging", self.path],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+        except subprocess.CalledProcessError as e:
+            raise ValueError(f"'{os.path.basename(self.path)}' isn't a valid apk") from e
+        except FileNotFoundError as e:
+            raise RuntimeError("aapt is borked. might be a program bug.") from e
         output = result.stdout
+        self.sha256 = self._compute_sha256()
+        
         lines = output.splitlines()
         for line in lines:
             line = line.strip()
 
-            # Package
+            # Package line
             if line.startswith("package:"):
                 parts = line.split()
                 
@@ -100,6 +161,8 @@ class APK:
                         self.versionCode = value
                     elif key == "versionName":
                         self.versionName = value
+                    elif key == "compileSdkVersion":
+                        self.compileSdkVersion = value
             # Uses permission
             if line.startswith("uses-permission:"):
                 parts = line.split()
@@ -112,9 +175,11 @@ class APK:
                         self.uses_permissions.append(value)
 
             if line.startswith("minSdkVersion:"):
-                self.minSdkVersion = line.split(":", 1)[1].strip("'")
+                self.minSdkVersion = self._parse_quoted_string(line)
+            if line.startswith("maxSdkVersion:"):
+                self.maxSdkVersion = self._parse_quoted_string(line)
             if line.startswith("targetSdkVersion:"):
-                self.targetSdkVersion = line.split(":", 1)[1].strip("'")
+                self.targetSdkVersion = self._parse_quoted_string(line)
             if line.startswith("native-code:"):
                 self.native_code = self._parse_quoted_list(line)
             if line.startswith("densities:"):
@@ -151,7 +216,7 @@ class APK:
             elif line.startswith("uses-feature:"):
                 match = re.search(r"name='([^']*)'", line)
                 if match:
-                    self.uses_features["used"].append(match.group(1))
+                    self.uses_features["uses"].append(match.group(1))
 
             if line.startswith("supports-any-density:"):
                 value = line.split(":", 1)[1].strip().strip("'")
@@ -163,3 +228,67 @@ class APK:
 
                 icon_path = icon_match.group(1) if icon_match else None
                 self.icon_bytes = self._extract_icon_bytes(icon_path)
+
+            if line.startswith("leanback-launchable-activity"):
+                self.supports_android_tv = True
+
+            if line.startswith("uses-feature:"):
+                name = self._parse_between(line, "name='", "'")
+                self.uses_features['uses'].append(name)
+
+                if name == 'android.hardware.type.watch':
+                        self.supports_wear_os = True
+                if name == 'android.hardware.vulkan.version' or name.startswith('android.hardware.vulkan'):
+                        self.uses_vulkan = True
+
+            if line.startswith("meta-data:"):
+                if self._parse_between(line, "name='", "'") == 'com.google.android.gms.car.application':
+                    self.supports_android_auto = True
+
+            if line.startswith("uses-gl-es:"):
+                raw = self._parse_between(line, "'", "'")
+                self.opengl_es_version = self._gles_version_decode(raw)
+                self.uses_opengles = True
+
+
+    def format_sdk_level(self, sdk_number):
+        if not sdk_number:
+            return ''
+
+        entry = ANDROID_VERSIONS.get(int(sdk_number))
+        if entry is None:
+            return f"API {sdk_number}"
+
+        return f"API {sdk_number} (Android {entry['version']} {entry['name']})"
+    
+    def format_filename(self, pattern):
+        replacements = {
+            '%label%': self.app_name or '',
+            '%version%': self.versionName or '',
+            '%build%': self.versionCode or '',
+            '%package%': self.package or '',
+            '%min%': self.minSdkVersion or '',
+            '%target%': self.targetSdkVersion or '',
+            '%max%': self.maxSdkVersion or '',
+            '%compile%': self.compileSdkVersion or '',
+            '%abis%': ' '.join(self.native_code),
+            '%screens%': ' '.join(self.supports_screens),
+            '%dpis%': ' '.join(self.densities),
+        }
+
+        result = pattern
+        for placeholder, value in replacements.items():
+            result = result.replace(placeholder, value)
+
+        return result
+
+    def sanitize_filename(self, name, replacement=' '):
+        for char in INVALID_FILENAME_CHARS:
+            name = name.replace(char, replacement)
+        return name.strip()
+
+
+if __name__ == "__main__":
+    apk = APK("/Users/ginging/Downloads/app-release.apk")
+    apk.parse()
+    pprint.pprint(apk.__dict__)
