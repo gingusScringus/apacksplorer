@@ -6,19 +6,24 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QFileDialog, QApplication, QMessageBox
 from PyQt5.QtGui import QPixmap
 
+# resolve path for core
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from core.apk import APK
 
+# resolve root path
 def resource_path(*parts):
     if getattr(sys, "frozen", False):
         base = Path(sys._MEIPASS)
     else:
         base = Path(__file__).resolve().parents[1]
     return base.joinpath(*parts)
-main_ui = resource_path("ui", "main.ui")
+
+main_ui = resource_path("forms", "main.ui")
+settings_dialog = resource_path("forms", "settings.ui")
+adb_box = resource_path("forms", "adbop.ui")
 prog_name = "APacKsplorer"
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -40,7 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
             None, 
             "Select a File", 
             "", 
-            "Android Packages (*.apk, *.xapk, *.apkm, *.apks);;All Files (*)"
+            "Android Packages (*.apk *.xapk *.apkm *.apks);;All Files (*)"
         )
         if not file_path:
             return
