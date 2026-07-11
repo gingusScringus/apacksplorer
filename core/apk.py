@@ -163,9 +163,3 @@ class APK:
 
                 icon_path = icon_match.group(1) if icon_match else None
                 self.icon_bytes = self._extract_icon_bytes(icon_path)
-# test
-if __name__ == "__main__":
-    #apk = APK("/Users/ginging/Downloads/app-release.apk")
-    apk = APK("/Users/ginging/Downloads/com.opera.browser_15.0.1162.60140-1400060140_minAPI9(armeabi,armeabi-v7a)(nodpi)_apkmirror.com.apk")
-    apk.parse()
-    pprint.pprint(apk.__dict__)

@@ -11,7 +11,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+# program modules
 from core.apk import APK
+from gui.settings_dialog import SettingsDialog
+from gui.adb_dialog import AdbDialog
+
 
 # resolve root path
 def resource_path(*parts):
@@ -30,13 +34,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
+        print("hello am window!")
+
         uic.loadUi(main_ui, self)
         self.setWindowTitle(prog_name)
         self.actionOpen.triggered.connect(self.open_apk)
         self.actionAbout.triggered.connect(self.show_about)
         self.actionAboutQt.triggered.connect(QApplication.aboutQt)
-        self.actionADB.triggered.connect(self.show_settings)
-
+        self.actionADB.triggered.connect(self.open_adb)
+        self.actionSettings.triggered.connect(self.open_settings)
         
     def open_apk(self):
         # insert open file dialog
@@ -88,10 +94,17 @@ class MainWindow(QtWidgets.QMainWindow):
             """
         )
 
-    def show_settings(self):
-        pass
+    def open_settings(self):
+        dlg = SettingsDialog(self)
+        dlg.exec_()
 
-app = QtWidgets.QApplication(sys.argv)
-window = MainWindow()
-window.show()
-sys.exit(app.exec_())
+    def open_adb(self):
+        self.adb_dlg = AdbDialog(self)
+        self.adb_dlg.show()
+
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())

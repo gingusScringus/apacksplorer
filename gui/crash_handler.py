@@ -1,0 +1,29 @@
+# crash_handler.py
+import sys
+import traceback
+from PyQt5.QtWidgets import QMessageBox
+
+print("HELLO FROM CRASH HANDLER")
+
+def handle_exception(exc_type, exc_value, exc_traceback):
+    print("handling exception")
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+
+    tb_text = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+    print(tb_text, file=sys.stderr)
+
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Critical)
+    msg.setWindowTitle("Ouch!")
+    msg.setText("APacKsplorer ran into an unexpected error and needs to close.")
+    msg.setDetailedText(tb_text)
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.exec_()
+
+    sys.exit(1)
+
+def install_exception_hook():
+    sys.excepthook = handle_exception
+    print("exception hook installed")
