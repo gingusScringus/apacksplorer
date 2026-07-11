@@ -29,6 +29,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(prog_name)
         self.actionOpen.triggered.connect(self.open_apk)
         self.actionAbout.triggered.connect(self.show_about)
+        self.actionAboutQt.triggered.connect(QApplication.aboutQt)
+        self.actionADB.triggered.connect(self.show_settings)
 
         
     def open_apk(self):
@@ -80,6 +82,9 @@ class MainWindow(QtWidgets.QMainWindow):
             <p>© 20006 ging</p>
             """
         )
+
+    def show_settings(self):
+        pass
 
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()
