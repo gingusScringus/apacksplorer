@@ -449,8 +449,6 @@
      </widget>
     </item>
    </layout>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
    <zorder>package_info_group</zorder>
    <zorder>app_icon_label</zorder>
   </widget>
@@ -460,7 +458,7 @@
      <x>0</x>
      <y>0</y>
      <width>840</width>
-     <height>32</height>
+     <height>30</height>
     </rect>
    </property>
    <property name="font">
@@ -497,6 +495,7 @@
      <addaction name="actionAPKMirror"/>
     </widget>
     <addaction name="actionRename"/>
+    <addaction name="actionADB"/>
     <addaction name="separator"/>
     <addaction name="menuSearch"/>
     <addaction name="actionVirusTotal"/>
@@ -507,18 +506,13 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionAboutQt"/>
     <addaction name="actionCheck_for_updates"/>
     <addaction name="separator"/>
     <addaction name="actionAAPT_output"/>
    </widget>
-   <widget class="QMenu" name="menuADB">
-    <property name="title">
-     <string>ADB</string>
-    </property>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuUtilities"/>
-   <addaction name="menuADB"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -532,7 +526,7 @@
   </action>
   <action name="actionRename">
    <property name="text">
-    <string>Rename</string>
+    <string>Clean Rename</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -586,6 +580,16 @@
   <action name="actionAAPT_output">
    <property name="text">
     <string>AAPT output</string>
+   </property>
+  </action>
+  <action name="actionAboutQt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionADB">
+   <property name="text">
+    <string>ADB</string>
    </property>
   </action>
  </widget>
