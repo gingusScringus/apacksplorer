@@ -4,19 +4,23 @@
 # Source: https://developer.android.com/guide/topics/manifest/uses-sdk-element#ApiLevels
 # File should be updated every once in a year with a new Android release
 # If an API level isn't found here, APacKsplorer should fall back to just showing "API <number>" with no version/codename.
+# alt name src: https://betawiki.net/wiki/Android
 
 1:
   version: "1.0"
   name: Base
+  alt-name: Astro Boy
 2:
   version: "1.1"
   name: Base 1.1
+  alt-name: Petit Four
 3:
   version: "1.5"
   name: Cupcake
 4:
   version: "1.6"
   name: Donut
+  alt-name: Donut-Burger
 5:
   version: "2.0"
   name: Eclair
@@ -26,15 +30,18 @@
 7:
   version: "2.1"
   name: Eclair MR1
+  alt-name: Flan
 8:
   version: "2.2"
   name: Froyo
 9:
   version: "2.3"
   name: Gingerbread
+  alt-name: Kraken
 10:
   version: "2.3.3"
   name: Gingerbread MR1
+  alt-name: Kraken
 11:
   version: "3.0"
   name: Honeycomb
@@ -53,57 +60,74 @@
 16:
   version: "4.1"
   name: Jelly Bean
+  alt-name: Ice Cream Sandwitch MR2
 17:
   version: "4.2"
   name: Jelly Bean MR1
+  alt-name: Jandycane
 18:
   version: "4.3"
   name: Jelly Bean MR2
+  alt-name: Jandycane
 19:
   version: "4.4"
   name: KitKat
+  alt-name: Key Lime Pie
 20:
   version: "4.4W"
   name: KitKat Watch
 21:
   version: "5.0"
   name: Lollipop
+  alt-name: Lemon Meringue Pie
 22:
   version: "5.1"
   name: Lollipop MR1
+  alt-name: Lemon Meringue Pie MR1
 23:
   version: "6.0"
   name: Marshmallow
+  alt-name: Macademia Nut Cookie
 24:
   version: "7.0"
   name: Nougat
+  alt-name: New York Cheesecake
 25:
   version: "7.1"
   name: Nougat MR1
+  alt-name: New York Cheesecake MR1
 26:
   version: "8.0"
   name: Oreo
+  alt-name: Oatmean Cookie
 27:
   version: "8.1"
   name: Oreo MR1
+  alt-name: Oatmeal Cookie MR1
 28:
   version: "9.0"
   name: Pie
+  alt-name: Pistachio Ice Cream
 29:
   version: "10"
-  name: Q / Quince Tart
+  name: Q
+  alt-name: Quince Tart
 30:
   version: "11"
-  name: R / Red Velvet Cake
+  name: R
+  alt-name: Red Velvet Cake
 31:
   version: "12"
-  name: S / Snow Cone
+  name: S 
+  alt-name: Snow Cone
 32:
   version: "12L"
-  name: Sv2 / Snow Cone v2
+  name: Sv2 
+  alt-name: Snow Cone v2
 33:
   version: "13"
-  name: T / Tiramisu
+  name: T 
+  alt-name: Tiramisu
 34:
   version: "14"
   name: Upside Down Cake
@@ -118,4 +142,4 @@
   name: Cinnamon Bun
 38:
   version: "18"
-  name: 
+  name: D #its in alphabet order so this is the guess
