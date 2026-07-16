@@ -30,8 +30,23 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout_4">
+    <property name="leftMargin">
+     <number>24</number>
+    </property>
+    <property name="topMargin">
+     <number>24</number>
+    </property>
+    <property name="rightMargin">
+     <number>24</number>
+    </property>
+    <property name="bottomMargin">
+     <number>24</number>
+    </property>
     <item row="0" column="0">
      <widget class="QLabel" name="app_icon_label">
+      <property name="statusTip">
+       <string>App icon</string>
+      </property>
       <property name="autoFillBackground">
        <bool>true</bool>
       </property>
@@ -45,6 +60,9 @@
     </item>
     <item row="0" column="1" rowspan="2">
      <widget class="QGroupBox" name="package_info_group">
+      <property name="statusTip">
+       <string>Brief APK information</string>
+      </property>
       <property name="title">
        <string>Package Information</string>
       </property>
@@ -54,46 +72,6 @@
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="2" column="0">
-          <widget class="QLabel" name="version_name_label">
-           <property name="text">
-            <string>Version name</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="4" colspan="2">
-          <widget class="QLineEdit" name="max_sdk_field">
-           <property name="statusTip">
-            <string>Maximum supported SDK version</string>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="screen_sizes_label">
-           <property name="text">
-            <string>Screen sizes</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" colspan="5">
-          <widget class="QLineEdit" name="app_name_field">
-           <property name="statusTip">
-            <string>App name</string>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="0">
           <widget class="QLabel" name="target_sdk_label">
            <property name="text">
@@ -104,15 +82,22 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="app_name_label">
-           <property name="text">
-            <string>App name</string>
+         <item row="3" column="1" colspan="2">
+          <widget class="QLineEdit" name="target_sdk_field">
+           <property name="statusTip">
+            <string>Targeted app SDK version</string>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
-           <property name="wordWrap">
+          </widget>
+         </item>
+         <item row="2" column="4" colspan="2">
+          <widget class="QLineEdit" name="version_code_field">
+           <property name="statusTip">
+            <string>Version referred by Android</string>
+           </property>
+           <property name="readOnly">
             <bool>true</bool>
            </property>
           </widget>
@@ -121,6 +106,26 @@
           <widget class="QLabel" name="max_sdk_label">
            <property name="text">
             <string>Max SDK</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="package_name_label">
+           <property name="text">
+            <string>Package name</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="3">
+          <widget class="QLabel" name="densities_label">
+           <property name="text">
+            <string>Densities</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -140,20 +145,20 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="4" colspan="2">
-          <widget class="QLineEdit" name="compile_sdk_field">
-           <property name="statusTip">
-            <string>SDK version of built app</string>
+         <item row="2" column="0">
+          <widget class="QLabel" name="version_name_label">
+           <property name="text">
+            <string>Version name</string>
            </property>
-           <property name="readOnly">
-            <bool>true</bool>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
-         <item row="6" column="1" colspan="2">
-          <widget class="QLineEdit" name="screen_sizes_field">
+         <item row="6" column="4" colspan="2">
+          <widget class="QLineEdit" name="densities_field">
            <property name="statusTip">
-            <string>Supported screen sizes</string>
+            <string>Supported screen densities</string>
            </property>
            <property name="readOnly">
             <bool>true</bool>
@@ -170,53 +175,13 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="1" colspan="5">
-          <widget class="QLineEdit" name="supported_abis_field">
-           <property name="statusTip">
-            <string>ABIs (Application Binary Interfaces) the app supports</string>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" colspan="2">
-          <widget class="QLineEdit" name="target_sdk_field">
-           <property name="statusTip">
-            <string>Targeted app SDK version</string>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QLabel" name="version_code_label">
+         <item row="6" column="0">
+          <widget class="QLabel" name="screen_sizes_label">
            <property name="text">
-            <string>Version code</string>
+            <string>Screen sizes</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="package_name_label">
-           <property name="text">
-            <string>Package name</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="4" colspan="2">
-          <widget class="QLineEdit" name="version_code_field">
-           <property name="statusTip">
-            <string>Version referred by Android</string>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -230,32 +195,15 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="3">
-          <widget class="QLabel" name="densities_label">
+         <item row="0" column="0">
+          <widget class="QLabel" name="app_name_label">
            <property name="text">
-            <string>Densities</string>
+            <string>App name</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-          </widget>
-         </item>
-         <item row="2" column="1" colspan="2">
-          <widget class="QLineEdit" name="version_name_field">
-           <property name="statusTip">
-            <string>Version referred by app</string>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="4" colspan="2">
-          <widget class="QLineEdit" name="densities_field">
-           <property name="statusTip">
-            <string>Supported screen densities</string>
-           </property>
-           <property name="readOnly">
+           <property name="wordWrap">
             <bool>true</bool>
            </property>
           </widget>
@@ -280,6 +228,89 @@
            </property>
           </widget>
          </item>
+         <item row="6" column="1" colspan="2">
+          <widget class="QLineEdit" name="screen_sizes_field">
+           <property name="statusTip">
+            <string>Supported screen sizes</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="4" colspan="2">
+          <widget class="QLineEdit" name="max_sdk_field">
+           <property name="statusTip">
+            <string>Maximum supported SDK version</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1" colspan="5">
+          <widget class="QLineEdit" name="supported_abis_field">
+           <property name="statusTip">
+            <string>ABIs (Application Binary Interfaces) the app supports</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" colspan="5">
+          <widget class="QLineEdit" name="app_name_field">
+           <property name="statusTip">
+            <string>App name</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" colspan="2">
+          <widget class="QLineEdit" name="version_name_field">
+           <property name="statusTip">
+            <string>Version referred by app</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="4" colspan="2">
+          <widget class="QLineEdit" name="compile_sdk_field">
+           <property name="statusTip">
+            <string>SDK version of built app</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLabel" name="version_code_label">
+           <property name="text">
+            <string>Version code</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Hash</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1" colspan="5">
+          <widget class="QLineEdit" name="lineEdit"/>
+         </item>
         </layout>
        </item>
       </layout>
@@ -287,17 +318,26 @@
     </item>
     <item row="0" column="2" rowspan="3">
      <widget class="QGroupBox" name="app_locales_group">
+      <property name="statusTip">
+       <string>Locales supported in app</string>
+      </property>
       <property name="title">
        <string>Application Locales</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QTableWidget" name="appLocalesTable">
+         <attribute name="horizontalHeaderCascadingSectionResizes">
+          <bool>false</bool>
+         </attribute>
          <attribute name="horizontalHeaderMinimumSectionSize">
           <number>20</number>
          </attribute>
          <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>70</number>
+          <number>95</number>
+         </attribute>
+         <attribute name="horizontalHeaderHighlightSections">
+          <bool>true</bool>
          </attribute>
          <column>
           <property name="text">
@@ -394,12 +434,35 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="xmlIconCheck">
+        <property name="text">
+         <string>XML Icon</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="signedCheck">
+        <property name="text">
+         <string>Signed</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="2" column="0" colspan="2">
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
        <widget class="QGroupBox" name="permissions_group">
+        <property name="statusTip">
+         <string>List of permissions used by app</string>
+        </property>
         <property name="title">
          <string>Permissions</string>
         </property>
@@ -407,7 +470,7 @@
          <item row="0" column="0">
           <widget class="QListWidget" name="permissionsList">
            <property name="statusTip">
-            <string>List of permissions used by app</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -416,6 +479,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QGroupBox" name="features_group">
+        <property name="statusTip">
+         <string>List of features used by app</string>
+        </property>
         <property name="title">
          <string>Features</string>
         </property>
@@ -423,7 +489,7 @@
          <item row="0" column="0">
           <widget class="QTreeWidget" name="featuresTree">
            <property name="statusTip">
-            <string>List of features used by app</string>
+            <string/>
            </property>
            <attribute name="headerVisible">
             <bool>true</bool>
@@ -469,7 +535,6 @@
    </layout>
    <zorder>package_info_group</zorder>
    <zorder>app_icon_label</zorder>
-   <zorder></zorder>
    <zorder>app_locales_group</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -505,6 +570,7 @@
     </widget>
     <addaction name="actionOpen"/>
     <addaction name="menuOpen_Recent"/>
+    <addaction name="actionConvert_to_APK"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
@@ -527,6 +593,7 @@
     </widget>
     <addaction name="actionClean_Rename"/>
     <addaction name="actionADB"/>
+    <addaction name="actionIcon_Browser"/>
     <addaction name="separator"/>
     <addaction name="menuSearch"/>
     <addaction name="actionVirusTotal"/>
@@ -553,6 +620,9 @@
    </property>
    <property name="statusTip">
     <string/>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionClean_Rename">
@@ -626,6 +696,16 @@
   <action name="actionRecents">
    <property name="text">
     <string>Recents</string>
+   </property>
+  </action>
+  <action name="actionConvert_to_APK">
+   <property name="text">
+    <string>Convert to APK</string>
+   </property>
+  </action>
+  <action name="actionIcon_Browser">
+   <property name="text">
+    <string>Icon Browser</string>
    </property>
   </action>
  </widget>
