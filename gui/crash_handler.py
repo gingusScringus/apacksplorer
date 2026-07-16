@@ -3,7 +3,7 @@ import sys
 import traceback
 from PyQt5.QtWidgets import QMessageBox
 
-print("HELLO FROM CRASH HANDLER")
+print("CRASH HANDLER READY")
 
 def handle_exception(exc_type, exc_value, exc_traceback):
     print("handling exception")

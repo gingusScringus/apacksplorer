@@ -17,17 +17,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 # program modules
+from core.paths import resource_path
 from core.apk import APK
 from gui.settings_dialog import SettingsDialog
 from gui.adb_dialog import AdbDialog
-
-# resolve root path
-def resource_path(*parts):
-    if getattr(sys, "frozen", False):
-        base = Path(sys._MEIPASS)
-    else:
-        base = Path(__file__).resolve().parents[1]
-    return base.joinpath(*parts)
 
 main_ui = resource_path("forms", "main.ui")
 settings_dialog = resource_path("forms", "settings.ui")

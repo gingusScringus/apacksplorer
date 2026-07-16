@@ -12,10 +12,33 @@ if getattr(sys, 'frozen', False):
     # running as a PyInstaller bundle
     # sys._MEIPASS points at the bundle's extracted resource root
     DROID_TOOLS = os.path.join(sys._MEIPASS, "tools")
+    bundle_candidates = []
+
+    # PyInstaller can place data files in different locations depending on the bundle type.
+    base_dirs = [sys._MEIPASS, os.path.dirname(sys._MEIPASS)]
+
+    # macOS app bundles commonly store bundled data under Contents/Resources rather than Contents/Frameworks.
+    if sys.platform == "darwin":
+        contents_dir = os.path.dirname(sys._MEIPASS)
+        base_dirs.extend([
+            os.path.join(contents_dir, "Resources"),
+            os.path.join(contents_dir, "Resources", "core"),
+            os.path.join(contents_dir, "Frameworks"),
+            os.path.join(contents_dir, "Frameworks", "core"),
+        ])
+
+    for base in base_dirs:
+        bundle_candidates.extend([
+            os.path.join(base, "core", "android_versions.yaml"),
+            os.path.join(base, "android_versions.yaml"),
+        ])
+
+    _VERSIONS_PATH = next((p for p in bundle_candidates if os.path.exists(p)), bundle_candidates[0])
 else:
     # running from source
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     DROID_TOOLS = os.path.join(SCRIPT_DIR, "..", "tools")
+    _VERSIONS_PATH = os.path.join(SCRIPT_DIR, "android_versions.yaml")
 
 system = platform.system()
 
@@ -28,7 +51,7 @@ elif system == "Linux":
 else:
     raise RuntimeError(f"unsupported platform: {system}")
 
-_VERSIONS_PATH = os.path.join(os.path.dirname(__file__), 'android_versions.yaml')
+
 INVALID_FILENAME_CHARS = '\\/:*?"<>|'
 
 with open(_VERSIONS_PATH, 'r', encoding='utf-8') as f:
@@ -38,7 +61,6 @@ class APK:
     def __init__(self, path):
         self.path = path
         self.icon_bytes = None
-
 
         # fixed values
         self.app_name = None
