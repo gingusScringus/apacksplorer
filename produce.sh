@@ -26,9 +26,11 @@ COMMON_ARGS=(
     --onedir
     --name APacKsplorer
     --add-data "tools:tools"
-    --add-data "ui:ui"
+    --add-data "forms:forms"
+    --add-data "core/android_versions.yaml:core"
+    --clean
     --noconfirm
-    ./gui/main_window.py
+    ./main.py
 )
 
 if [[ "$OS" == "Darwin" ]]; then
