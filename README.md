@@ -4,7 +4,7 @@
 (please suggest a better name if you have one)
 
 >[!WARNING]
-Another work in progress app that I may or may not finish... there's a whole lotta nothin here.
+This program is still under work in progress.
 
 Read the properties of an Android APK file.
 
