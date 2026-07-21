@@ -7,9 +7,6 @@ ARCH="$(uname -m)"
 
 echo "$script_name: detected OS=$OS ARCH=$ARCH"
 
-# sanity check: warn if no venv is active, since this has bitten us before
-# (pyinstaller silently falling back to a system python with none of our
-# pinned deps installed, e.g. missing PyQt5 entirely)
 if [[ -z "$VIRTUAL_ENV" ]]; then
     echo "$script_name: WARNING - no venv appears to be active."
     echo "$script_name: run 'source .venv/bin/activate' first, or this build"
@@ -21,17 +18,8 @@ if [[ -z "$VIRTUAL_ENV" ]]; then
     fi
 fi
 
-COMMON_ARGS=(
-    --windowed
-    --onedir
-    --name APacKsplorer
-    --add-data "tools:tools"
-    --add-data "forms:forms"
-    --add-data "core/android_versions.yaml:core"
-    --clean
-    --noconfirm
-    ./main.py
-)
+echo "$script_name: building via spec file"
+pyinstaller --noconfirm APacKsplorer.spec
 
 if [[ "$OS" == "Darwin" ]]; then
     if [[ "$ARCH" == "arm64" ]]; then
@@ -43,17 +31,9 @@ if [[ "$OS" == "Darwin" ]]; then
         exit 1
     fi
 
-    echo "$script_name: building macOS .app ($OUT_NAME)"
-    # NOTE: no --target-arch universal2 here - PyQt5 does not ship a
-    # universal2 wheel (confirmed: separate arm64 / x86_64 wheels only),
-    # so a "universal2" PyInstaller build just wraps a single-arch PyQt5
-    # in a fat launcher stub, which is broken. build native per-arch instead.
-    pyinstaller \
-        --icon assets/APacKsplorer.icns \
-        --add-data "assets:assets" \
-        "${COMMON_ARGS[@]}"
-
-    # rename the produced .app so arm64/x86_64 builds don't clobber each other
+    # NOTE: still no universal2 - PyQt5 ships arch-specific wheels only,
+    # same reasoning as before, just now enforced by whichever venv/python
+    # ran pyinstaller rather than a --target-arch flag.
     if [[ -d "dist/APacKsplorer.app" && "$OUT_NAME" != "APacKsplorer" ]]; then
         rm -rf "dist/${OUT_NAME}.app"
         mv "dist/APacKsplorer.app" "dist/${OUT_NAME}.app"
@@ -65,13 +45,10 @@ elif [[ "$OS" == "Linux" ]]; then
         echo "$script_name: unsupported Linux arch '$ARCH' (x86_64 only for now)"
         exit 1
     fi
-
-    echo "$script_name: building Linux onedir build"
-    pyinstaller \
-        --add-data "assets:assets" \
-        "${COMMON_ARGS[@]}"
-
     echo "$script_name: output at dist/APacKsplorer/ (Linux .deb packaging: TODO)"
+
+elif [[ "$OS" == "Windows_NT" || "$OS" =~ ^MINGW ]]; then
+    echo "$script_name: output at dist/APacKsplorer/"
 
 else
     echo "$script_name: unsupported OS '$OS'"
@@ -79,5 +56,3 @@ else
 fi
 
 echo "$script_name: done."
-
-# xtra flags for reference: --debug=all
