@@ -281,7 +281,8 @@ class APK:
         if entry is None:
             return f"API {sdk_number}"
 
-        return f"API {sdk_number} (Android {entry['version']} {entry['name']})"
+        # return f"API {sdk_number} (Android {entry['version']} {entry['name']})"
+        return f"Android {entry['version']} {entry['name']} (API {sdk_number})"
     
     def format_filename(self, pattern):
         replacements = {
