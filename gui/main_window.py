@@ -63,6 +63,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.wearOSCheck,
             self.openGLESCheck,
             self.vulkanCheck,
+            self.signedCheck,
+            self.xmlIconCheck,
         ):
             checkbox.setCheckable(True)
             checkbox.setEnabled(True)
@@ -72,12 +74,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # disable utilities item before apk loaded
         self.menuSearch.setEnabled(False)
         self.actionClean_Rename.setEnabled(False)
-        self.actionADB.setEnabled(False)
+        # self.actionADB.setEnabled(False)
         self.actionPlay_Store.setEnabled(False)
         self.actionWeb_Search.setEnabled(False)
         self.actionAPKMirror.setEnabled(False)
         self.actionVirusTotal.setEnabled(False)
         self.actionAPK_Update.setEnabled(False)
+        self.actionIcon_Browser.setEnabled(False)
 
     
     def dragEnterEvent(self, event):

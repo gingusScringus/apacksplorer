@@ -1,5 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtGui import QFontDatabase, QFont
 from pathlib import Path
 
 # resolve path for core
@@ -19,6 +20,9 @@ class AdbDialog(QtWidgets.QDialog):
         self.uninstallButton.clicked.connect(self.uninstall)
         self.installRunButton.clicked.connect(self.install_run)
         self.listDevicesButton.clicked.connect(self.device_list)
+
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
+        self.adbLogfield.setFont(font)
         
 
     def install(self, file_path):
