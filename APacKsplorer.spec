@@ -14,14 +14,45 @@ system = platform.system()
 project_root = os.path.abspath(SPECPATH)
 
 # --- shared across all platforms ---
+# only bundle the platform tools dir this build actually needs at runtime
+# (core/apk.py and core/adb.py only ever look at their own platform's subfolder)
+if system == "Windows":
+    tools_subdir = "windows"
+elif system == "Darwin":
+    tools_subdir = "macos"
+elif system == "Linux":
+    tools_subdir = "linux"
+else:
+    raise RuntimeError(f"unsupported platform: {system}")
+
 added_data = [
-    ("tools", "tools"),
+    (f"tools/{tools_subdir}", f"tools/{tools_subdir}"),
     ("forms", "forms"),
     ("core/android_versions.yaml", "core")
 ]
 
+# PyQt5 submodules APacKsplorer doesn't touch - trims the Qt runtime that
+# gets bundled. QtSvg stays IN (planned icon browser will render adaptive
+# icon layers, which are vector drawables under the hood).
+pyqt5_excludes = [
+    'PyQt5.QtWebEngine', 'PyQt5.QtWebEngineCore', 'PyQt5.QtWebEngineWidgets',
+    'PyQt5.QtMultimedia', 'PyQt5.QtMultimediaWidgets',
+    'PyQt5.QtQml', 'PyQt5.QtQuick', 'PyQt5.QtQuickWidgets', 'PyQt5.QtQuick3D',
+    'PyQt5.QtSql',
+    'PyQt5.QtTest',
+    'PyQt5.QtBluetooth', 'PyQt5.QtNfc',
+    'PyQt5.QtPositioning', 'PyQt5.QtLocation',
+    'PyQt5.QtSensors',
+    'PyQt5.QtSerialPort',
+    'PyQt5.QtHelp',
+    'PyQt5.QtDesigner',
+    'PyQt5.QtXmlPatterns',
+    'PyQt5.QtPrintSupport',
+    'PyQt5.QtNetwork',
+]
+
 a = Analysis(
-    ["gui/main_window.py"],
+    ["main.py"],
     pathex=[project_root],
     binaries=[],
     datas=added_data,
@@ -29,7 +60,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=pyqt5_excludes,
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
@@ -71,6 +102,7 @@ if system == "Darwin":
         icon="assets/APacKsplorer.icns",
         bundle_identifier="com.gingtec.apacksplorer",
         info_plist={
+            "LSMultipleInstancesProhibited": False,
             "CFBundleShortVersionString": "0.1.0",
             "UTExportedTypeDeclarations": [
                 {
