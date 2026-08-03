@@ -3,6 +3,8 @@ import sys
 import traceback
 from PyQt5.QtWidgets import QMessageBox
 
+from core import __progname__
+
 print("CRASH HANDLER READY")
 
 def handle_exception(exc_type, exc_value, exc_traceback):
@@ -17,7 +19,7 @@ def handle_exception(exc_type, exc_value, exc_traceback):
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Critical)
     msg.setWindowTitle("Ouch!")
-    msg.setText("APacKsplorer ran into an unexpected error and needs to close.")
+    msg.setText(f"{__progname__} ran into an unexpected error and needs to close. Please report this to the developer!")
     msg.setDetailedText(tb_text)
     msg.setStandardButtons(QMessageBox.Ok)
     msg.exec_()
