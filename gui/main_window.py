@@ -17,6 +17,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 # program modules
+from core import __version__, __progname__
 from core.paths import resource_path
 from core.apk import APK
 from gui.settings_dialog import SettingsDialog
@@ -25,7 +26,6 @@ from gui.adb_dialog import AdbDialog
 main_ui = resource_path("forms", "main.ui")
 settings_dialog = resource_path("forms", "settings.ui")
 adb_box = resource_path("forms", "adbop.ui")
-prog_name = "APacKsplorer"
 MAX_RECENT_FILES = 10
 DEFAULT_RENAME_PATTERN = "%label% %version%.%build%"
 
@@ -36,7 +36,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print("hello am window!")
 
         uic.loadUi(main_ui, self)
-        self.setWindowTitle(prog_name)
+        self.setWindowTitle(__progname__)
         self.setAcceptDrops(True)
 
         self.settings = QSettings("gingTEC", "APacKsplorer")
@@ -52,6 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actionVirusTotal.triggered.connect(self.open_virustotal)
         self.actionAPK_Update.triggered.connect(self.apk_update)
         self.actionClean_Rename.triggered.connect(self.clean_rename)
+        self.actionCheck_for_Updates.triggered.connect(self.check_for_updates)
 
         self.update_recent_menu()
 
@@ -131,6 +132,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if apk.icon_bytes:
             pixmap = QPixmap()
             pixmap.loadFromData(apk.icon_bytes)
+            pixmap = pixmap.scaled(96, 96, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
             self.app_icon_label.setPixmap(pixmap)
 
         pprint.pprint(apk.__dict__)
@@ -197,18 +199,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actionVirusTotal.setEnabled(True)
         self.actionAPK_Update.setEnabled(True)
 
-        self.setWindowTitle(f"{apk.app_name} | {prog_name}")
+        self.setWindowTitle(f"{apk.app_name} | {__progname__}")
         self.current_apk = apk
 
     def show_about(self):
         QMessageBox.about(
             None,
-            "About APacKsplorer",
-            """
-            <h3>APacKsplorer</h3>
-            <p>Version 69</p>
+            f"About {__progname__}",
+            f"""
+            <h3>{__progname__}</h3>
+            <p>Version {__version__}</p>
             <p>some apk reading thingy idgfk</p>
-            <p>© 20006 ging</p>
+            <p>© 2026 gingusScringus</p>
             """
         )
 
@@ -340,7 +342,11 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         apk.path = new_path
-        self.setWindowTitle(f"{apk.app_name} | {prog_name}")
+        self.setWindowTitle(f"{apk.app_name} | {__progname__}")
+
+    def check_for_updates(self):
+        print("make updater thingy")
+        
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
