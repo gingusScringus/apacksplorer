@@ -102,7 +102,7 @@ if system == "Darwin":
         icon="assets/APacKsplorer.icns",
         bundle_identifier="com.gingtec.apacksplorer",
         info_plist={
-            "LSMultipleInstancesProhibited": False,
+            "LSMultipleInstancesProhibited": True,
             "CFBundleShortVersionString": "0.1.0",
             "UTExportedTypeDeclarations": [
                 {
