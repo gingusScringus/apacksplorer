@@ -62,8 +62,12 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1" colspan="2">
-      <widget class="QLineEdit" name="commandField"/>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="installButton">
+       <property name="text">
+        <string>Install</string>
+       </property>
+      </widget>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="adbCommandlabel">
@@ -75,38 +79,13 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
-      <widget class="QPushButton" name="uninstallButton">
-       <property name="text">
-        <string>Uninstall</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="3">
-      <widget class="QPushButton" name="nuclearUninstallButton">
-       <property name="text">
-        <string>Nuclear Uninstall</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QPushButton" name="installButton">
-       <property name="text">
-        <string>Install</string>
-       </property>
-      </widget>
+     <item row="0" column="1" colspan="2">
+      <widget class="QLineEdit" name="commandField"/>
      </item>
      <item row="4" column="1">
       <widget class="QPushButton" name="installRunButton">
        <property name="text">
         <string>Install + Run</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QPushButton" name="submitButton">
-       <property name="text">
-        <string>Submit</string>
        </property>
       </widget>
      </item>
@@ -117,10 +96,38 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="3">
+      <widget class="QPushButton" name="nuclearUninstallButton">
+       <property name="text">
+        <string>Nuclear Uninstall</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QPushButton" name="uninstallButton">
+       <property name="text">
+        <string>Uninstall</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QPushButton" name="submitButton">
+       <property name="text">
+        <string>Submit</string>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="4">
       <widget class="QPushButton" name="refreshDevicesButton">
        <property name="text">
         <string>Refresh Devices</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="adbDaemonStatus">
+       <property name="text">
+        <string>ADB daemon: unknown</string>
        </property>
       </widget>
      </item>

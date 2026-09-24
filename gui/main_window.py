@@ -6,10 +6,10 @@ import webbrowser
 import requests
 from pathlib import Path
 
-from PyQt5 import QtCore, QtWidgets, uic
-from PyQt5.QtWidgets import QFileDialog, QApplication, QMessageBox, QTreeWidgetItem, QTableWidgetItem, QAction, QInputDialog
+from PyQt5 import QtCore, QtWidgets, QtGui, uic
+from PyQt5.QtWidgets import QFileDialog, QApplication, QMessageBox, QTreeWidgetItem, QTableWidgetItem, QAction, QInputDialog, QDialog, QVBoxLayout
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QSettings, QEvent
 
 # resolve path for core
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,29 +30,41 @@ MAX_RECENT_FILES = 10
 DEFAULT_RENAME_PATTERN = "%label% %version%.%build%"
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, window_id=None):
         super().__init__()
 
-        print("hello am window!")
+        self.window_id = window_id
+        print(f"hello iam window {self.window_id}!")
 
         uic.loadUi(main_ui, self)
         self.setWindowTitle(__progname__)
         self.setAcceptDrops(True)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+
+        # track currently-loaded APK (None when no APK loaded)
+        self.current_apk = None
 
         self.settings = QSettings("gingTEC", "APacKsplorer")
 
+        # File
         self.actionOpen.triggered.connect(self.open_apk)
-        self.actionAbout.triggered.connect(self.show_about)
-        self.actionAboutQt.triggered.connect(QApplication.aboutQt)
-        self.actionADB.triggered.connect(self.open_adb)
         self.actionSettings.triggered.connect(self.open_settings)
+        self.actionNew_Window.triggered.connect(self.new_window)
+
+        # Utilities
+        self.actionADB.triggered.connect(self.open_adb)
+        self.actionClean_Rename.triggered.connect(self.clean_rename)
         self.actionPlay_Store.triggered.connect(self.search_play_store)
         self.actionAPKMirror.triggered.connect(self.search_apkmirror)
         self.actionWeb_Search.triggered.connect(self.search_web)
         self.actionVirusTotal.triggered.connect(self.open_virustotal)
         self.actionAPK_Update.triggered.connect(self.apk_update)
-        self.actionClean_Rename.triggered.connect(self.clean_rename)
+
+        # Help
+        self.actionAbout.triggered.connect(self.show_about)
+        self.actionAboutQt.triggered.connect(QApplication.aboutQt)
         self.actionCheck_for_Updates.triggered.connect(self.check_for_updates)
+        self.actionAAPT_output.triggered.connect(self.aapt_raw_output)
 
         self.update_recent_menu()
 
@@ -100,6 +112,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.load_apk(file_path)
 
+    def event(self, event):
+        if event.type() == QEvent.FileOpen:
+            self.load_apk(event.file())
+            return True
+        return super().event(event)
+
+    def new_window(self):
+        QApplication.instance().new_window()
+
     def open_apk(self):
         # insert open file dialog
         print("should open file picker for apk")
@@ -116,7 +137,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def load_apk(self, file_path):
 
-        print(f"got {file_path}")
+        print(f"[window {self.window_id}] got {file_path}")
         apk = APK(file_path)
         try:
             apk.parse()
@@ -136,18 +157,26 @@ class MainWindow(QtWidgets.QMainWindow):
             self.app_icon_label.setPixmap(pixmap)
 
         pprint.pprint(apk.__dict__)
+        text_fields = [
+            (self.app_name_field, apk.app_name),
+            (self.package_name_field, apk.package),
+            (self.version_name_field, apk.versionName),
+            (self.version_code_field, apk.versionCode),
+            (self.min_sdk_field, apk.format_sdk_level(apk.minSdkVersion)),
+            (self.max_sdk_field, apk.format_sdk_level(apk.maxSdkVersion)),
+            (self.target_sdk_field, apk.format_sdk_level(apk.targetSdkVersion)),
+            (self.compile_sdk_field, apk.format_sdk_level(apk.compileSdkVersion)),
+            (self.supported_abis_field, " ".join(apk.native_code)),
+            (self.screen_sizes_field, " ".join(apk.supports_screens)),
+            (self.densities_field, " ".join(apk.densities)),
+            (self.hash_field, " ".join(apk.sha256)),
+]
 
-        self.app_name_field.setText(apk.app_name)
-        self.package_name_field.setText(apk.package)
-        self.version_name_field.setText(apk.versionName)
-        self.version_code_field.setText(apk.versionCode)
-        self.min_sdk_field.setText(apk.format_sdk_level(apk.minSdkVersion))
-        self.max_sdk_field.setText(apk.format_sdk_level(apk.maxSdkVersion))
-        self.target_sdk_field.setText(apk.format_sdk_level(apk.targetSdkVersion))
-        self.compile_sdk_field.setText(apk.format_sdk_level(apk.compileSdkVersion))
-        self.supported_abis_field.setText(" ".join(apk.native_code))
-        self.screen_sizes_field.setText(" ".join(apk.supports_screens))  
-        self.densities_field.setText(" ".join(apk.densities))
+        for field, value in text_fields:
+            field.setText(value)
+            field.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+            field.setCursorPosition(0)
+            field.deselect()
 
         self.androidCheck.setChecked(apk.supports_android)
         self.androidTVCheck.setChecked(apk.supports_android_tv)
@@ -346,6 +375,32 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def check_for_updates(self):
         print("make updater thingy")
+
+    def aapt_raw_output(self):
+        if not self.current_apk:
+            return
+
+        output = "".join(self.current_apk.raw_output)
+
+        dlg = QDialog()
+        dlg.setWindowTitle("AAPT Output")
+
+        layout = QVBoxLayout()
+
+        text = QtWidgets.QPlainTextEdit(dlg)
+        text.setReadOnly(True)
+        text.setPlainText(output)
+
+        font = QtGui.QFontDatabase.systemFont(QtGui.QFontDatabase.FixedFont)
+        text.setFont(font)
+        layout.addWidget(text)
+
+        copy_btn = QtWidgets.QPushButton("Copy to Clipboard", dlg)
+        copy_btn.clicked.connect(lambda: QApplication.clipboard().setText(text.toPlainText()))
+        layout.addWidget(copy_btn)
+
+        dlg.setLayout(layout)
+        dlg.exec_()
         
 
 if __name__ == "__main__":

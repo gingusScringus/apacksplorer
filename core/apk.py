@@ -73,6 +73,9 @@ class APK:
         self.compileSdkVersion = None
         self.supports_any_density = None
         self.opengl_es_version = None
+        self.sha256 = None
+        self.md5 = None
+        self.raw_output = None
 
         # lists
         self.uses_permissions = []
@@ -163,6 +166,7 @@ class APK:
         except FileNotFoundError as e:
             raise RuntimeError("aapt is borked. might be a program bug.") from e
         output = result.stdout
+        self.raw_output = output
         self.sha256 = self._compute_sha256()
         
         lines = output.splitlines()
@@ -196,7 +200,7 @@ class APK:
                     if key == "name":
                         self.uses_permissions.append(value)
 
-            if line.startswith("minSdkVersion:"):
+            if line.startswith("sdkVersion:"):
                 self.minSdkVersion = self._parse_quoted_string(line)
             if line.startswith("maxSdkVersion:"):
                 self.maxSdkVersion = self._parse_quoted_string(line)
@@ -309,9 +313,3 @@ class APK:
         for char in INVALID_FILENAME_CHARS:
             name = name.replace(char, replacement)
         return name.strip()
-
-
-if __name__ == "__main__":
-    apk = APK("/Users/ginging/Downloads/app-release.apk")
-    apk.parse()
-    pprint.pprint(apk.__dict__)
